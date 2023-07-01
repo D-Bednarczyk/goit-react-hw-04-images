@@ -1,34 +1,27 @@
-import React, { Component } from 'react';
+import { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import css from './Modal.module.css';
 
-export class Modal extends Component {
-  modalClose = e => {
+export const Modal = ({ largeImageURL, onModalClose }) => {
+  const modalClose = e => {
     if (e.keyCode === 27 || e.currentTarget === e.target) {
-      return this.props.onModalClose();
+      return onModalClose();
     }
   };
 
-  componentDidMount() {
-    document.addEventListener('keydown', this.modalClose, false);
-  }
+  useEffect(() => {
+    document.addEventListener('keydown', modalClose, false);
+    return () => document.removeEventListener('keydown', modalClose, false);
+  }, [onModalClose]);
 
-  componentWillUnmount() {
-    document.removeEventListener('keydown', this.modalClose, false);
-  }
-
-  render() {
-    const { largeImageURL } = this.props;
-
-    return (
-      <div className={css.Overlay} onClick={this.modalClose}>
-        <div className={css.Modal}>
-          <img src={largeImageURL} alt="modal" />
-        </div>
+  return (
+    <div className={css.Overlay} onClick={modalClose}>
+      <div className={css.Modal}>
+        <img src={largeImageURL} alt="modal" />
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
 Modal.propTypes = {
   largeImageURL: PropTypes.string,
